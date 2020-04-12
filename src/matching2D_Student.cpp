@@ -13,12 +13,40 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 
     if (matcherType.compare("MAT_BF") == 0)
     {
-        int normType = cv::NORM_HAMMING;
+        int normType;
+        if(descriptorType.compare("DES_BINARY")==0)
+        {
+            normType=cv::NORM_HAMMING;
+        }
+        else if(descriptorType.compare("DES_HOG")==0)
+        {
+            normType=cv::NORM_L2;
+        }
+        else
+        {
+            throw invalid_argument("invalid descriptorType "+descriptorType);
+        }
         matcher = cv::BFMatcher::create(normType, crossCheck);
     }
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
-        // ...
+        if(descriptorType.compare("DES_HOG")==0)
+        {
+            matcher=cv::FlannBasedMatcher::create();
+        }
+        else if(descriptorType.compare("DES_BINARY")==0)
+        {
+            // https://stackoverflow.com/questions/43830849/opencv-use-flann-with-orb-descriptors-to-match-features
+            matcher=cv::makePtr<cv::FlannBasedMatcher>(cv::makePtr<cv::flann::LshIndexParams>(12,20,2));
+        }
+        else
+        {
+            throw invalid_argument("invalid descriptorType "+descriptorType);
+        }
+    }
+    else
+    {
+        throw invalid_argument("invalid matcherType "+matcherType);
     }
 
     // perform matching task
@@ -29,12 +57,26 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     }
     else if (selectorType.compare("SEL_KNN") == 0)
     { // k nearest neighbors (k=2)
+        vector< vector<cv::DMatch> > kmatches;
+        matcher->knnMatch(descSource,descRef,kmatches,2);
 
-        // ...
+        double minDistanceRatio=0.8;
+        for(auto kmatch: kmatches)
+        {
+            if(kmatch.size()==2 && kmatch[0].distance<minDistanceRatio*kmatch[1].distance)
+            {
+                matches.push_back(kmatch[0]);
+            }
+        }
+    }
+    else
+    {
+        throw invalid_argument("invalid selectorType "+selectorType);
     }
 }
 
 // Use one of several types of state-of-art descriptors to uniquely identify keypoints
+// BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, string descriptorType)
 {
     // select appropriate descriptor
@@ -48,10 +90,25 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
 
         extractor = cv::BRISK::create(threshold, octaves, patternScale);
     }
-    else
+    else if(descriptorType.compare("BRIEF")==0)
     {
-
-        //...
+        extractor=cv::xfeatures2d::BriefDescriptorExtractor::create();
+    }
+    else if(descriptorType.compare("ORB")==0)
+    {
+        extractor=cv::ORB::create();
+    }
+    else if(descriptorType.compare("FREAK")==0)
+    {
+        extractor=cv::xfeatures2d::FREAK::create();
+    }
+    else if(descriptorType.compare("AKAZE")==0)
+    {
+        extractor=cv::AKAZE::create();
+    }
+    else if(descriptorType.compare("SIFT")==0)
+    {
+        extractor=cv::xfeatures2d::SIFT::create();
     }
 
     // perform feature description
