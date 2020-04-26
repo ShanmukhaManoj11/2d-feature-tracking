@@ -31,3 +31,26 @@ Metric 2a : Average execution time for detector
 | ORB       |      14.63     |
 | AKAZE     |      87.40     |
 | SIFT      |     118.87     |
+
+Metric 2b : Average execution time for descriptor
+
+| Descriptor  | exec time (ms) | 
+|-------------|----------------|
+| BRISK       |     242.49     |
+| BRIEF       |       1.29     |
+| ORB         |       3.01     |
+| FREAK       |      40.43     |
+| AKAZE       |      76.48     |
+| SIFT        |      44.59     |
+
+Metric 3: Average number of matched points for detector-descriptor pairs
+
+|           | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT | 
+|-----------|-------|-------|-----|-------|-------|------|
+| SHITOMASI | 85    | 105   | 101 | 85    | N/A   | 103  |
+| HARRIS    | 16    | 20    | 18  | 16    | N/A   | 18   |
+| FAST      | 243   | 315   | 308 | 248   | N/A   | 310  |
+| BRISK     | 175   | 189   | 169 | 170   | N/A   | 183  |
+| ORB       | 84    | 61    | 85  | 47    | N/A   | 85   |
+| AKAZE     | 135   | 141   | 132 | 132   | 140   | 141  |
+| SIFT      | 66    | 78    | N/A | 66    | N/A   | 89   |
