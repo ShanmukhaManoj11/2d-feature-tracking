@@ -8,7 +8,7 @@ List of keypoint detectors - SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
 List of descriptor extractors - BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 
-### Metric 1: Average number of keypoints detected
+#### Metric 1: Average number of keypoints detected
 
 | Detector  | total # keypoints | # keypoints in ROI | 
 |-----------|-------------------|--------------------|
@@ -20,7 +20,7 @@ List of descriptor extractors - BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 | AKAZE     |        1343       |        167         |
 | SIFT      |        1386       |        139         |
 
-### Metric 2a : Average execution time for detector
+#### Metric 2a : Average execution time for detector
 
 | Detector  | exec time (ms) | 
 |-----------|----------------|
@@ -32,7 +32,7 @@ List of descriptor extractors - BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 | AKAZE     |      87.40     |
 | SIFT      |     118.87     |
 
-### Metric 2b : Average execution time for descriptor
+#### Metric 2b : Average execution time for descriptor
 
 | Descriptor  | exec time (ms) | 
 |-------------|----------------|
@@ -43,7 +43,7 @@ List of descriptor extractors - BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 | AKAZE       |      76.48     |
 | SIFT        |      44.59     |
 
-### Metric 3: Average number of matched points for detector-descriptor pairs
+#### Metric 3: Average number of matched points for detector-descriptor pairs
 
 |           | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT | 
 |-----------|-------|-------|-----|-------|-------|------|
