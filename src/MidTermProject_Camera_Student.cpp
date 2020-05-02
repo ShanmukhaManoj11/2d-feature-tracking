@@ -40,23 +40,11 @@ int main(int argc, const char *argv[])
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
 
-    string detectorType = "SIFT"; // SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
-    string descriptorType = "SIFT"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+    string detectorType = "FAST"; // SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
+    string descriptorType = "BRIEF"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
     string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
-    string descriptorDataType = "DES_HOG"; // DES_BINARY, DES_HOG
+    string descriptorDataType = "DES_BINARY"; // DES_BINARY, DES_HOG
     string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
-
-    ofstream logfile;
-    // Task 7:
-    // string logfile_name=detectorType+"_keypoints_info.csv";
-    // logfile.open("../results/task7/"+logfile_name);
-    // logfile<<"all_kpts,time(ms),vehicle_kpts,vehicle_kpt_sizes\n";
-    // Task 8:
-    string logfile_name=detectorType+"_"+descriptorType+".csv";
-    logfile.open("../results/task8/"+logfile_name);
-    logfile<<"detection_time(ms),desc_extraction_time(ms),num_matched_kpts\n";
-
-    double t;
 
     /* MAIN LOOP OVER ALL IMAGES */
 
@@ -98,7 +86,6 @@ int main(int argc, const char *argv[])
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
         //// -> HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
-        t=(double)cv::getTickCount();
         if (detectorType.compare("SHITOMASI") == 0)
         {
             detKeypointsShiTomasi(keypoints, imgGray, false);
@@ -118,11 +105,6 @@ int main(int argc, const char *argv[])
                 cout<<exp.what()<<endl;
             }
         }
-        t=((double)cv::getTickCount()-t)/cv::getTickFrequency();
-        // Task 7:
-        // logfile<<to_string(keypoints.size())<<","<<1000*t/1.0<<",";
-        // Task 8:
-        logfile<<1000*t/1.0<<",";
         //// EOF STUDENT ASSIGNMENT
 
         //// STUDENT ASSIGNMENT
@@ -143,13 +125,6 @@ int main(int argc, const char *argv[])
             }
             keypoints=focusedKeypoints;
         }
-        // Task 7:
-        // logfile<<to_string(keypoints.size())<<",";
-        // for(auto kpt: keypoints)
-        // {
-        //     logfile<<to_string(kpt.size)<<",";
-        // }
-        // logfile<<"\n";
 
         cout<<"---> keypoints on preceding vehicle = "<<keypoints.size()<<endl;
 
@@ -180,11 +155,7 @@ int main(int argc, const char *argv[])
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
         cv::Mat descriptors;
-        t=(double)cv::getTickCount();
         descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
-        t=((double)cv::getTickCount()-t)/cv::getTickFrequency();
-        // Task 8:
-        logfile<<1000*t/1.0<<",";
         //// EOF STUDENT ASSIGNMENT
 
         // push descriptors for current frame to end of data buffer
@@ -208,8 +179,7 @@ int main(int argc, const char *argv[])
                 matchDescriptors((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints,
                                  (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
                                  matches, descriptorDataType, matcherType, selectorType);
-                // Task 8:
-                logfile<<matches.size();
+                std::cout<<"# matches: "<<matches.size()<<std::endl;
             }
             catch(const invalid_argument& ia)
             {
@@ -242,12 +212,8 @@ int main(int argc, const char *argv[])
             }
             bVis = false;
         }
-        // Task 8:
-        logfile<<"\n";
 
     } // eof loop over all images
-
-    logfile.close();
 
     return 0;
 }
